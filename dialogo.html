@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treino de Inglês - Dialogue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            min-height: 100vh;
+            padding: 1rem;
+            background: #f5f5f7;
+        }
+
+        .box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            max-width: 680px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            color: #1d1d1f;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        .line {
+            margin-bottom: 12px;
+            padding: 14px 16px;
+            border-radius: 10px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .line:hover {
+            opacity: 0.8;
+        }
+
+        .line::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: transparent;
+            border-radius: 10px 0 0 10px;
+            transition: background 0.2s ease;
+        }
+
+        .person-a {
+            background: #e8f4f8;
+            color: #1a5f7a;
+            margin-right: 20%;
+        }
+
+        .person-a strong {
+            color: #0f4c5c;
+            font-weight: 600;
+        }
+
+        .person-b {
+            background: #f0f0f5;
+            color: #4a4a6a;
+            margin-left: 20%;
+        }
+
+        .person-b strong {
+            color: #2d2d4a;
+            font-weight: 600;
+        }
+
+        .active {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+
+        .active.person-a::after {
+            background: #007aff;
+        }
+
+        .active.person-b::after {
+            background: #5856d6;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            background: #007aff;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            margin-top: 1.5rem;
+            transition: all 0.2s ease;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        button:active {
+            transform: scale(0.98);
+            background: #0051d5;
+        }
+
+        button.stop-btn {
+            background: #ff3b30;
+        }
+
+        button.stop-btn:active {
+            background: #d32f2f;
+        }
+
+        #script-container {
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #script-container::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        #script-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        #script-container::-webkit-scrollbar-thumb {
+            background: #c7c7cc;
+            border-radius: 4px;
+        }
+
+        /* Mobile First - base styles já são mobile */
+        @media (min-width: 768px) {
+            body {
+                padding: 2rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .box {
+                padding: 2.5rem;
+                max-width: 600px;
+            }
+
+            h2 {
+                font-size: 1.75rem;
+                margin-bottom: 2rem;
+            }
+
+            .line {
+                font-size: 1rem;
+                padding: 16px 18px;
+                margin-bottom: 14px;
+            }
+
+            button {
+                padding: 18px;
+                font-size: 1.1rem;
+            }
+
+            button:hover {
+                background: #0051d5;
+            }
+
+            button.stop-btn:hover {
+                background: #d32f2f;
+            }
+
+            .person-a {
+                margin-right: 30%;
+            }
+
+            .person-b {
+                margin-left: 30%;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .box {
+                max-width: 700px;
+            }
+
+            .person-a {
+                margin-right: 35%;
+            }
+
+            .person-b {
+                margin-left: 35%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            .line {
+                font-size: 0.9rem;
+                padding: 12px 14px;
+            }
+
+            .person-a {
+                margin-right: 15%;
+            }
+
+            .person-b {
+                margin-left: 15%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="box">
+        <h2>Lição do Garaio de Ingres 🤡</h2>
+        <div id="script-container"></div>
+        <button id="playBtn" onclick="startDialogue()">▶️ Ouvir Diálogo Completo</button>
+    </div>
+
+    <script>
+        const dialogueData = [
+            { speaker: "A", text: "Hey! Do you want to go to the cinema tonight? There's a new movie out." },
+            { speaker: "B", text: "I'd love to, but I can't. My routine is exhausting. I wake up at half past five every day." },
+            { speaker: "A", text: "Wow, that's so early! I don't wake up until eight because I live near my office." },
+            { speaker: "B", text: "You're lucky! I have to catch the bus at a quarter past six. The traffic in the morning is terrible." },
+            { speaker: "A", text: "That sounds rough. I start work at nine thirty, so I usually have coffee and read the news first." },
+            { speaker: "B", text: "That's nice. I start at seven sharp. By noon, I'm starving, so I always have lunch at twelve exactly." },
+            { speaker: "A", text: "I eat later, around one p.m. Do you get any breaks in the afternoon?" },
+            { speaker: "B", text: "Just a quick coffee break at three thirty. Then I finish at four and go straight to the gym." },
+            { speaker: "A", text: "The gym after work? You really are dedicated! I finish at six, then go home and make dinner." },
+            { speaker: "B", text: "I don't get home until seven thirty. I'm usually too tired to cook, so I just have a salad and watch TV." },
+            { speaker: "A", text: "I don't blame you! What time do you finally crash?" },
+            { speaker: "B", text: "I'm in bed by ten. I need my eight hours! That's why I can't go out tonight." },
+            { speaker: "A", text: "Fair enough. What about Saturday? Are you free then?" },
+            { speaker: "B", text: "Yes! Saturdays I can actually relax. Let's meet at two p.m.?" },
+            { speaker: "A", text: "Perfect! See you Saturday then!" }
+        ];
+
+        const container = document.getElementById('script-container');
+        const playBtn = document.getElementById('playBtn');
+        let synth = window.speechSynthesis;
+        let voices = [];
+        let isPlaying = false;
+        let currentIndex = 0;
+
+        function loadVoices() { voices = synth.getVoices(); }
+        loadVoices();
+        if (speechSynthesis.onvoiceschanged !== undefined) { speechSynthesis.onvoiceschanged = loadVoices; }
+
+        dialogueData.forEach((line, index) => {
+            const div = document.createElement('div');
+            div.className = `line person-${line.speaker.toLowerCase()}`;
+            div.id = `line-${index}`;
+            div.innerHTML = `<strong>${line.speaker}:</strong> ${line.text}`;
+            div.onclick = () => startFromLine(index);
+            container.appendChild(div);
+        });
+
+        function startFromLine(lineIndex) {
+            if (isPlaying) {
+                stopDialogue();
+            }
+            currentIndex = lineIndex;
+            startDialogue();
+        }
+
+        function startDialogue() {
+            if (isPlaying) {
+                stopDialogue();
+                return;
+            }
+
+            isPlaying = true;
+            playBtn.textContent = '⏸️ Parar Diálogo';
+            playBtn.classList.add('stop-btn');
+
+            let voiceA = voices.find(v => v.name.includes("Google US English")) || voices.find(v => v.lang === "en-US");
+            let voiceB = voices.find(v => v.name.includes("Google UK English Female")) || voices.find(v => v.name.includes("Zira")) || voices.find(v => v.lang === "en-GB");
+
+            if (!voiceA) voiceA = voices[0];
+            if (!voiceB) voiceB = voices[1] || voices[0];
+
+            function speakNext() {
+                if (currentIndex >= dialogueData.length || !isPlaying) {
+                    stopDialogue();
+                    return;
+                }
+
+                // Remove active de todas as linhas
+                dialogueData.forEach((_, idx) => {
+                    document.getElementById(`line-${idx}`).classList.remove('active');
+                });
+
+                const currentDiv = document.getElementById(`line-${currentIndex}`);
+                currentDiv.classList.add('active');
+                currentDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                const item = dialogueData[currentIndex];
+                const utterance = new SpeechSynthesisUtterance(item.text);
+
+                utterance.voice = (item.speaker === "A") ? voiceA : voiceB;
+                if (item.speaker === "A") { utterance.pitch = 0.9; utterance.rate = 0.95; }
+                else { utterance.pitch = 1.1; utterance.rate = 1; }
+
+                utterance.onend = () => {
+                    currentIndex++;
+                    setTimeout(speakNext, 600);
+                };
+                synth.speak(utterance);
+            }
+            speakNext();
+        }
+
+        function stopDialogue() {
+            isPlaying = false;
+            synth.cancel();
+            playBtn.textContent = '▶️ Ouvir Diálogo Completo';
+            playBtn.classList.remove('stop-btn');
+            currentIndex = 0;
+
+            // Remove highlight de todas as linhas
+            dialogueData.forEach((_, index) => {
+                document.getElementById(`line-${index}`).classList.remove('active');
+            });
+        }
+    </script>
+</body>
+
+</html>
